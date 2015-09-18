@@ -6,6 +6,9 @@ from django.shortcuts import  get_object_or_404,render
 from django.http import Http404
 from .models import Question
 from django.core.urlresolvers import reverse
+from django.core import serializers
+from django.http.response import  JsonResponse
+import json
 
 """ Primera version
 
@@ -67,3 +70,24 @@ def vote(request, question_id):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
+
+def questions(request):
+    s = serializers.serialize('json',Question.objects.all())
+    return HttpResponse(s, content_type="application/json")
+
+def get_question(request):
+    questions = Question.objects.all()
+    all_q = []
+    for foreq in questions:
+         output = {
+                    'question_text': foreq.question_text,
+                    'pub_date': foreq.pub_date,
+                    'id': foreq.id,
+         }
+         all_q.append(output)
+
+    return JsonResponse(data=all_q, safe=False)
+
+def questionsdump(request):
+    s = serializers.serialize('json',Question.objects.all())
+    return HttpResponse(json.dumps(s), content_type="application/json")
