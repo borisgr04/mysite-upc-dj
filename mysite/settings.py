@@ -29,7 +29,8 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
+#'material',
+#'material.admin',
 INSTALLED_APPS = (
     'django_admin_bootstrapped',
     'django.contrib.admin',
