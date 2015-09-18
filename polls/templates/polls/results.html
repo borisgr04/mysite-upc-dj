@@ -1,4 +1,8 @@
-<h1>{{ question.question_text }}</h1>
+{% extends "basebs.html" %}
+{% block title %}Resultados{% endblock %}
+
+{% block content %}
+<h3>{{ question.question_text }}</h3>
 
 <ul>
 {% for choice in question.choice_set.all %}
@@ -7,3 +11,5 @@
 </ul>
 
 <a href="{% url 'polls:detail' question.id %}">Vote again?</a>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+<!DOCTYPE >
+<html lang="es">
+<head>
+<title>{% block title %}{% endblock %}</title>
+    {% include 'material/includes/material_css.html' %}
+    {% include 'material/includes/material_js.html' %}
+</head>
+<body>
+{% load material_form %}
+<h1>Mi sitio Web</h1>
+{% block content %}{% endblock %}
+{% block footer %}
+<hr>
+<p>Gracias por visitar nuestro sitio web.</p>
+{% endblock %}
+<button type="submit" name="_submit" class="btn">Submit</button>
+</body>
