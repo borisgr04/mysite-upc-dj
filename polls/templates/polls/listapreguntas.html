@@ -1,0 +1,122 @@
+{% extends "basebs.html" %}
+Lista de Preguntas
+
+{% block content %}
+
+<table id="table_id" class="table table-condensed table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            Id
+                        </th>
+                        <th>
+                            Pregunta
+                        </th>
+                        <th>
+                            Fecha
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="bodyTable">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td>
+                            <input type="text" id="txtNom" class="form-control">
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary" id="btnAdd">Add</button>
+                        </td>
+
+                    </tr>
+                </tfoot>
+            </table>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+         function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        //http://coreymaynard.com/blog/performing-ajax-post-requests-in-django/
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    // Only send the token to relative URLs i.e. locally.
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            }
+        });
+        $.ajaxSetup({
+            error: function(xhr, textStatus, error) {
+                console.log(error);
+            }
+        });
+
+
+      $("#btnAdd").click(function(){
+        var question= {
+            question_text:$("#txtNom").val()
+        };
+
+        $.ajax({
+                url: "/polls/addQuestion/",
+                type: 'POST',
+                data: question,
+                success:function(q){
+                    //alert(JSON.stringify(q));
+                    $("#bodyTable").append(
+                                        "<tr><td>" + q.id +
+                                        "</td><td> " +q.question_text +
+                                        "</td><td>" + q.pub_date + "</td>\n\
+                                         <td></td></tr>"
+                                        );
+                    $("#txtNom").val('')
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+        });
+
+
+      });
+
+      $.getJSON("/polls/questions/", function( questions ) {
+          //Verificar Contenido de Variable JSON
+          //alert(JSON.stringify(questions));
+
+          $("#bodyTable").empty();
+            $.each(questions, function (index, q) {
+                                $("#bodyTable").append(
+                                        "<tr><td>" + q.id +
+                                        "</td><td> " +q.question_text +
+                                        "</td><td>" + q.pub_date + "</td>\n\
+                                         <td></td></tr>"
+                                        );
+            });
+
+        });
+    });
+
+
+</script>
+
+{% endblock %}

@@ -15,5 +15,11 @@ urlpatterns = [
     url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name='vote'),
 
     url(r'^questions/$', views.get_question),
+
+    url(r'^listapreguntas/$', views.listapreguntas),
+
+    url(r'^addQuestion/$', views.add_question),
+
+
 ]
 

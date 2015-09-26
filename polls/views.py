@@ -8,6 +8,7 @@ from .models import Question
 from django.core.urlresolvers import reverse
 from django.core import serializers
 from django.http.response import  JsonResponse
+from django.utils import timezone
 import json
 
 """ Primera version
@@ -91,3 +92,18 @@ def get_question(request):
 def questionsdump(request):
     s = serializers.serialize('json',Question.objects.all())
     return HttpResponse(json.dumps(s), content_type="application/json")
+
+def listapreguntas(request):
+    return render(request, 'polls/listapreguntas.html')
+
+def add_question(request):
+    if request.method == 'POST' and request.is_ajax():
+        texto = request.POST.get('question_text')
+        q = Question(question_text=texto, pub_date=timezone.now())
+        q.save()
+        output = {
+                    'question_text': q.question_text,
+                    'pub_date': q.pub_date,
+                    'id': q.id,
+        }
+    return JsonResponse(data=output, safe=False)
